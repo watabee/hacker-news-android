@@ -2,7 +2,9 @@ package com.github.watabee.hackernews.util
 
 import android.view.View
 import android.widget.TextView
+import androidx.annotation.ColorInt
 import androidx.databinding.BindingAdapter
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.github.watabee.hackernews.R
 
 @BindingAdapter("goneIfTextIsNullOrEmpty")
@@ -18,4 +20,9 @@ fun setInfoTextView(textView: TextView, score: Int, user: String, timeAgo: Strin
     val userText = res.getString(R.string.story_info_user, user)
 
     textView.text = "$scoreText $userText ${timeAgo.decapitalize()}"
+}
+
+@BindingAdapter(value = ["colorSchemeColor"])
+fun colorSchemeColor(swipeRefreshLayout: SwipeRefreshLayout, @ColorInt color: Int) {
+    swipeRefreshLayout.setColorSchemeColors(color)
 }

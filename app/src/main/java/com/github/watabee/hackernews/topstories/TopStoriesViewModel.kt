@@ -1,5 +1,6 @@
 package com.github.watabee.hackernews.topstories
 
+import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,6 +12,8 @@ import com.github.watabee.hackernews.db.dao.StoryDao
 import com.github.watabee.hackernews.db.entity.Story
 import com.github.watabee.hackernews.util.ResourceResolver
 import io.reactivex.Flowable
+import io.reactivex.Single
+import io.reactivex.SingleTransformer
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
@@ -29,32 +32,39 @@ class TopStoriesViewModel @Inject constructor(
     private val _stories = MutableLiveData<List<StoryUiModel>>()
     val stories: LiveData<List<StoryUiModel>> = _stories
 
+    val loading = ObservableBoolean()
+
+    private val uiModelTransformer = SingleTransformer<List<Long>, List<StoryUiModel>> {
+        it.flatMap { storyIds ->
+            val now = System.currentTimeMillis()
+            Flowable.fromIterable(storyIds)
+                .flatMapSingle({ storyId ->
+                    Flowable.concat(
+                        storyDao.findStoryById(storyId).map(this::mapToHackerNewsItem).toFlowable(),
+                        api.findItem(storyId)
+                            .flatMap { item ->
+                                storyDao.insertStory(mapToStory(item)).toSingleDefault(item)
+                            }
+                            .toFlowable()
+                    ).firstOrError()
+                }, false, 4)
+                .toList()
+                .map { items -> items.sortedBy { item -> storyIds.indexOf(item.id) } }
+                .map { items -> items.map { item -> mapToUiModel(item, now) } }
+        }
+    }
+
     init {
         findTopStories()
     }
 
     private fun findTopStories() {
-        api.findTopStories()
-            .map { it.take(30) }
-            .flatMap { storyIds ->
-                val now = System.currentTimeMillis()
-                Flowable.fromIterable(storyIds)
-                    .flatMapSingle({ storyId ->
-                        Flowable.concat(
-                            storyDao.findStoryById(storyId)
-                                .map(this::mapToHackerNewsItem)
-                                .toFlowable(),
-                            api.findItem(storyId)
-                                .flatMap { item ->
-                                    storyDao.insertStory(mapToStory(item)).toSingleDefault(item)
-                                }
-                                .toFlowable()
-                        ).firstOrError()
-                    }, false, 4)
-                    .toList()
-                    .map { stories -> stories.sortedBy { storyIds.indexOf(it.id) } }
-                    .map { stories -> stories.map { mapToUiModel(it, now) } }
-            }
+        Single
+            .using(
+                { loading.set(true) },
+                { api.findTopStories().map { it.take(30) }.compose(uiModelTransformer) },
+                { loading.set(false) }
+            )
             .observeOn(schedulers.main)
             .subscribeBy(
                 onSuccess = _stories::setValue,
@@ -62,6 +72,8 @@ class TopStoriesViewModel @Inject constructor(
             )
             .addTo(disposable)
     }
+
+    fun refresh() = findTopStories()
 
     override fun onCleared() {
         super.onCleared()

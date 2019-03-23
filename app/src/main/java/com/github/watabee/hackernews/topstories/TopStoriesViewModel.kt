@@ -32,6 +32,9 @@ class TopStoriesViewModel @Inject constructor(
     private val _stories = MutableLiveData<List<StoryUiModel>>()
     val stories: LiveData<List<StoryUiModel>> = _stories
 
+    private val _error = MutableLiveData<Boolean>()
+    val error: LiveData<Boolean> = _error
+
     val loading = ObservableBoolean()
 
     private val uiModelTransformer = SingleTransformer<List<Long>, List<StoryUiModel>> {
@@ -59,6 +62,8 @@ class TopStoriesViewModel @Inject constructor(
     }
 
     private fun findTopStories() {
+        _error.value = false
+
         Single
             .using(
                 { loading.set(true) },
@@ -68,7 +73,7 @@ class TopStoriesViewModel @Inject constructor(
             .observeOn(schedulers.main)
             .subscribeBy(
                 onSuccess = _stories::setValue,
-                onError = Timber::e
+                onError = { _error.value = true }
             )
             .addTo(disposable)
     }

@@ -55,6 +55,7 @@ dependencies {
     implementation "com.xwray:groupie:${versions.groupie}"
     implementation "com.xwray:groupie-databinding:${versions.groupie}"
 
+    implementation "com.google.android.material:material:${versions.material}"
     implementation "androidx.cardview:cardview:${versions.cardview}"
 
     testImplementation 'junit:junit:4.12'

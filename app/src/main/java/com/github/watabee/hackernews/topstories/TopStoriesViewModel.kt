@@ -1,6 +1,5 @@
 package com.github.watabee.hackernews.topstories
 
-import androidx.databinding.ObservableBoolean
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,14 +9,19 @@ import com.github.watabee.hackernews.api.data.HackerNewsItem
 import com.github.watabee.hackernews.common.StoryUiModel
 import com.github.watabee.hackernews.db.dao.StoryDao
 import com.github.watabee.hackernews.db.entity.Story
+import com.github.watabee.hackernews.topstories.TopStoriesAction.FindTopStoriesAction
+import com.github.watabee.hackernews.topstories.TopStoriesEvent.InitialEvent
+import com.github.watabee.hackernews.topstories.TopStoriesEvent.RefreshEvent
 import com.github.watabee.hackernews.util.ResourceResolver
+import com.github.watabee.hackernews.util.map
 import io.reactivex.Flowable
-import io.reactivex.Single
+import io.reactivex.ObservableTransformer
 import io.reactivex.SingleTransformer
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
-import timber.log.Timber
+import io.reactivex.subjects.BehaviorSubject
 import javax.inject.Inject
 
 class TopStoriesViewModel @Inject constructor(
@@ -29,15 +33,14 @@ class TopStoriesViewModel @Inject constructor(
 
     private val disposable = CompositeDisposable()
 
-    private val _stories = MutableLiveData<List<StoryUiModel>>()
-    val stories: LiveData<List<StoryUiModel>> = _stories
+    private val _state = MutableLiveData<TopStoriesState>()
+    val state: LiveData<TopStoriesState> = _state
 
-    private val _error = MutableLiveData<Boolean>()
-    val error: LiveData<Boolean> = _error
+    val loading: LiveData<Boolean> = state.map { it.inProgress }
 
-    val loading = ObservableBoolean()
+    private val event = BehaviorSubject.createDefault<TopStoriesEvent>(InitialEvent)
 
-    private val uiModelTransformer = SingleTransformer<List<Long>, List<StoryUiModel>> {
+    private val findStoryProcessor = SingleTransformer<List<Long>, List<StoryUiModel>> {
         it.flatMap { storyIds ->
             val now = System.currentTimeMillis()
             Flowable.fromIterable(storyIds)
@@ -57,32 +60,50 @@ class TopStoriesViewModel @Inject constructor(
         }
     }
 
+    private val actionProcessor =
+        ObservableTransformer<TopStoriesAction, TopStoriesResult> { actions ->
+            actions.switchMap {
+                api.findTopStories()
+                    .map { it.take(30) }
+                    .compose(findStoryProcessor)
+                    .toObservable()
+                    .map<TopStoriesResult> { TopStoriesResult.Success(it) }
+                    .onErrorReturn { TopStoriesResult.Failure }
+                    .observeOn(schedulers.main)
+                    .startWith(TopStoriesResult.InFlight)
+            }
+        }
+
+    private val reducer =
+        BiFunction<TopStoriesState, TopStoriesResult, TopStoriesState> { previousState, result ->
+            when (result) {
+                is TopStoriesResult.Success ->
+                    previousState.copy(topStories = result.topStories, inProgress = false)
+                TopStoriesResult.Failure ->
+                    previousState.copy(error = true, inProgress = false)
+                TopStoriesResult.InFlight ->
+                    previousState.copy(error = false, inProgress = true)
+            }
+        }
+
     init {
-        findTopStories()
-    }
-
-    private fun findTopStories() {
-        _error.value = false
-
-        Single
-            .using(
-                { loading.set(true) },
-                { api.findTopStories().map { it.take(30) }.compose(uiModelTransformer) },
-                { loading.set(false) }
-            )
-            .observeOn(schedulers.main)
-            .subscribeBy(
-                onSuccess = _stories::setValue,
-                onError = { _error.value = true }
-            )
+        event.map(this::actionFromEvent)
+            .compose(actionProcessor)
+            .scan(TopStoriesState.idle(), reducer)
+            .subscribeBy(onNext = _state::postValue)
             .addTo(disposable)
     }
 
-    fun refresh() = findTopStories()
+    fun refresh() = event.onNext(RefreshEvent)
 
     override fun onCleared() {
         super.onCleared()
         disposable.clear()
+    }
+
+    private fun actionFromEvent(event: TopStoriesEvent): TopStoriesAction = when (event) {
+        InitialEvent -> FindTopStoriesAction
+        RefreshEvent -> FindTopStoriesAction
     }
 
     private fun mapToUiModel(item: HackerNewsItem, now: Long): StoryUiModel {
@@ -105,4 +126,21 @@ class TopStoriesViewModel @Inject constructor(
             text = item.text, score = item.score, updatedAt = System.currentTimeMillis()
         )
     }
+}
+
+private sealed class TopStoriesEvent {
+
+    object InitialEvent : TopStoriesEvent()
+
+    object RefreshEvent : TopStoriesEvent()
+}
+
+private sealed class TopStoriesAction {
+    object FindTopStoriesAction : TopStoriesAction()
+}
+
+private sealed class TopStoriesResult {
+    class Success(val topStories: List<StoryUiModel>) : TopStoriesResult()
+    object Failure : TopStoriesResult()
+    object InFlight : TopStoriesResult()
 }

@@ -39,12 +39,14 @@ class TopStoriesActivity : AppCompatActivity() {
         val binding: ActivityTopStoriesBinding =
             DataBindingUtil.setContentView(this, R.layout.activity_top_stories)
 
+        binding.lifecycleOwner = this
         binding.viewModel = viewModel
         binding.recyclerView.adapter = adapter
 
-        viewModel.stories.observeNonNull(this, adapter::update)
-        viewModel.error.observeNonNull(this) { error ->
-            if (error) {
+        viewModel.state.observeNonNull(this) { state ->
+            adapter.update(state.topStories)
+
+            if (state.error) {
                 if (!snackbar.isShown) {
                     snackbar.show()
                 }

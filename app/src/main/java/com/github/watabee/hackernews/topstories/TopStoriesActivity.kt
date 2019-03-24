@@ -1,13 +1,16 @@
 package com.github.watabee.hackernews.topstories
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.github.watabee.hackernews.R
 import com.github.watabee.hackernews.common.StoriesAdapter
+import com.github.watabee.hackernews.common.StoryBindableItem
 import com.github.watabee.hackernews.databinding.ActivityTopStoriesBinding
 import com.github.watabee.hackernews.di.ActivityComponent
 import com.github.watabee.hackernews.di.ViewModelKey
@@ -33,6 +36,12 @@ class TopStoriesActivity : AppCompatActivity() {
         ).setAction(R.string.retry) { viewModel.refresh() }
     }
 
+    private val customTabsIntent: CustomTabsIntent by lazy(LazyThreadSafetyMode.NONE) {
+        CustomTabsIntent.Builder()
+            .addDefaultShareMenuItem()
+            .build()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ActivityComponent.create(this).inject(this)
@@ -55,6 +64,12 @@ class TopStoriesActivity : AppCompatActivity() {
                     snackbar.dismiss()
                 }
             }
+        }
+
+        adapter.setOnItemClickListener { item, _ ->
+            val uri: Uri = (item as? StoryBindableItem)?.uiModel?.url?.let(Uri::parse)
+                ?: return@setOnItemClickListener
+            customTabsIntent.launchUrl(this, uri)
         }
     }
 }

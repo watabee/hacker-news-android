@@ -109,7 +109,8 @@ class TopStoriesViewModel @Inject constructor(
     private fun mapToUiModel(item: HackerNewsItem, now: Long): StoryUiModel {
         return StoryUiModel(
             title = item.title, text = item.text, score = item.score, user = item.by,
-            timeAgo = resourceResolver.getRelativeTimeSpanString(item.time * 1000, now)
+            timeAgo = resourceResolver.getRelativeTimeSpanString(item.time * 1000, now),
+            url = item.url
         )
     }
 

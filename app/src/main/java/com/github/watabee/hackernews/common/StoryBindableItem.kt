@@ -5,7 +5,7 @@ import com.github.watabee.hackernews.databinding.ListItemStoryBinding
 import com.xwray.groupie.databinding.BindableItem
 
 class StoryBindableItem(
-    private val uiModel: StoryUiModel
+    val uiModel: StoryUiModel
 ) : BindableItem<ListItemStoryBinding>(uiModel.hashCode().toLong()) {
 
     override fun getLayout(): Int = R.layout.list_item_story
@@ -13,6 +13,8 @@ class StoryBindableItem(
     override fun bind(viewBinding: ListItemStoryBinding, position: Int) {
         viewBinding.uiModel = uiModel
     }
+
+    override fun isClickable(): Boolean = !uiModel.url.isNullOrBlank()
 }
 
 data class StoryUiModel(
@@ -20,5 +22,6 @@ data class StoryUiModel(
     val text: String?,
     val score: Int,
     val user: String,
-    val timeAgo: String
+    val timeAgo: String,
+    val url: String?
 )

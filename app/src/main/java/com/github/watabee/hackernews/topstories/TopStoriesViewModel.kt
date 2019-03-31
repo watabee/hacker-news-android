@@ -3,6 +3,7 @@ package com.github.watabee.hackernews.topstories
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import com.github.watabee.hackernews.AppRxSchedulers
 import com.github.watabee.hackernews.api.HackerNewsApi
 import com.github.watabee.hackernews.api.data.HackerNewsItem
@@ -13,7 +14,6 @@ import com.github.watabee.hackernews.topstories.TopStoriesAction.FindTopStoriesA
 import com.github.watabee.hackernews.topstories.TopStoriesEvent.InitialEvent
 import com.github.watabee.hackernews.topstories.TopStoriesEvent.RefreshEvent
 import com.github.watabee.hackernews.util.ResourceResolver
-import com.github.watabee.hackernews.util.map
 import io.reactivex.Flowable
 import io.reactivex.ObservableTransformer
 import io.reactivex.SingleTransformer

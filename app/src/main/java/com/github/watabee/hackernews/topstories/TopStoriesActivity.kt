@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.github.watabee.hackernews.R
@@ -14,6 +13,7 @@ import com.github.watabee.hackernews.common.StoryBindableItem
 import com.github.watabee.hackernews.databinding.ActivityTopStoriesBinding
 import com.github.watabee.hackernews.di.ActivityComponent
 import com.github.watabee.hackernews.di.ViewModelKey
+import com.github.watabee.hackernews.util.bindView
 import com.github.watabee.hackernews.util.observeNonNull
 import com.google.android.material.snackbar.Snackbar
 import dagger.Binds
@@ -21,7 +21,7 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 import javax.inject.Inject
 
-class TopStoriesActivity : AppCompatActivity() {
+class TopStoriesActivity : AppCompatActivity(R.layout.activity_top_stories) {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -45,8 +45,7 @@ class TopStoriesActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ActivityComponent.create(this).inject(this)
-        val binding: ActivityTopStoriesBinding =
-            DataBindingUtil.setContentView(this, R.layout.activity_top_stories)
+        val binding: ActivityTopStoriesBinding = bindView()
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel

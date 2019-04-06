@@ -36,32 +36,31 @@ dependencies {
     implementation project(":modules:api")
     implementation project(":modules:db")
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
-    implementation "androidx.appcompat:appcompat:${versions.appcompat}"
-    implementation "androidx.activity:activity-ktx:${versions.activity}"
-    implementation "androidx.recyclerview:recyclerview:${versions.recyclerview}"
-    implementation "androidx.core:core-ktx:${versions.core}"
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation "androidx.browser:browser:${versions.browser}"
+    implementation deps.kotlin.stdlib
+    implementation deps.androidx.appcompat
+    implementation deps.androidx.activity
+    implementation deps.androidx.recyclerview
+    implementation deps.androidx.core
+    implementation deps.androidx.constraintlayout
+    implementation deps.androidx.browser
+    implementation deps.androidx.cardview
+    implementation deps.material
 
-    implementation "androidx.lifecycle:lifecycle-extensions:${versions.lifecycle}"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:${versions.lifecycle}"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${versions.lifecycle}"
+    implementation deps.androidx.lifecycle.extensions
+    implementation deps.androidx.lifecycle.livedata
+    implementation deps.androidx.lifecycle.viewmodel
 
-    implementation "io.reactivex.rxjava2:rxjava:${versions.rxjava}"
-    implementation "io.reactivex.rxjava2:rxandroid:${versions.rxandroid}"
-    implementation "io.reactivex.rxjava2:rxkotlin:${versions.rxkotlin}"
+    implementation deps.rxjava
+    implementation deps.rxandroid
+    implementation deps.rxkotlin
 
-    implementation "com.google.dagger:dagger:${versions.dagger}"
-    kapt "com.google.dagger:dagger-compiler:${versions.dagger}"
+    implementation deps.dagger.core
+    kapt deps.dagger.compiler
 
-    implementation "com.xwray:groupie:${versions.groupie}"
-    implementation "com.xwray:groupie-databinding:${versions.groupie}"
+    implementation deps.groupie.core
+    implementation deps.groupie.databinding
 
-    implementation "com.google.android.material:material:${versions.material}"
-    implementation "androidx.cardview:cardview:${versions.cardview}"
-
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    testImplementation deps.junit
+    androidTestImplementation deps.androidx.test.runner
+    androidTestImplementation deps.androidx.test.espresso
 }

@@ -5,25 +5,21 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.github.watabee.hackernews.R
 import com.github.watabee.hackernews.common.StoriesAdapter
 import com.github.watabee.hackernews.common.StoryBindableItem
 import com.github.watabee.hackernews.databinding.ActivityTopStoriesBinding
 import com.github.watabee.hackernews.di.ActivityComponent
-import com.github.watabee.hackernews.di.ViewModelKey
 import com.github.watabee.hackernews.util.bindView
 import com.github.watabee.hackernews.util.observeNonNull
 import com.google.android.material.snackbar.Snackbar
-import dagger.Binds
+import com.squareup.inject.assisted.dagger2.AssistedModule
 import dagger.Module
-import dagger.multibindings.IntoMap
 import javax.inject.Inject
 
 class TopStoriesActivity : AppCompatActivity(R.layout.activity_top_stories) {
 
-    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var viewModelFactory: TopStoriesViewModelFactory
 
     private val viewModel by viewModels<TopStoriesViewModel> { viewModelFactory }
     private val adapter by lazy(LazyThreadSafetyMode.NONE) { StoriesAdapter() }
@@ -73,11 +69,6 @@ class TopStoriesActivity : AppCompatActivity(R.layout.activity_top_stories) {
     }
 }
 
-@Module
-abstract class TopStoriesActivityModule {
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(TopStoriesViewModel::class)
-    abstract fun bindViewModel(viewModel: TopStoriesViewModel): ViewModel
-}
+@AssistedModule
+@Module(includes = [AssistedInject_TopStoriesAssistedInjectModule::class])
+abstract class TopStoriesAssistedInjectModule

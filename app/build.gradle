@@ -48,7 +48,8 @@ dependencies {
 
     implementation deps.androidx.lifecycle.extensions
     implementation deps.androidx.lifecycle.livedata
-    implementation deps.androidx.lifecycle.viewmodel
+    implementation deps.androidx.lifecycle.viewmodel.ktx
+    implementation deps.androidx.lifecycle.viewmodel.savedstate
 
     implementation deps.rxjava
     implementation deps.rxandroid
@@ -56,6 +57,8 @@ dependencies {
 
     implementation deps.dagger.core
     kapt deps.dagger.compiler
+    compileOnly deps.dagger.assistedInjectAnnotations
+    kapt deps.dagger.assistedInjectProcessor
 
     implementation deps.groupie.core
     implementation deps.groupie.databinding

@@ -1,11 +1,11 @@
 package com.github.watabee.hackernews.di
 
-import com.github.watabee.hackernews.topstories.TopStoriesActivityModule
+import com.github.watabee.hackernews.topstories.TopStoriesAssistedInjectModule
 import dagger.Module
 
 @Module(
     includes = [
-        TopStoriesActivityModule::class
+        TopStoriesAssistedInjectModule::class
     ]
 )
 class ActivityModule

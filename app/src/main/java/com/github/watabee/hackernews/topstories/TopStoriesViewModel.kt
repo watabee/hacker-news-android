@@ -2,6 +2,7 @@ package com.github.watabee.hackernews.topstories
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import com.github.watabee.hackernews.AppRxSchedulers
@@ -14,6 +15,8 @@ import com.github.watabee.hackernews.topstories.TopStoriesAction.FindTopStoriesA
 import com.github.watabee.hackernews.topstories.TopStoriesEvent.InitialEvent
 import com.github.watabee.hackernews.topstories.TopStoriesEvent.RefreshEvent
 import com.github.watabee.hackernews.util.ResourceResolver
+import com.squareup.inject.assisted.Assisted
+import com.squareup.inject.assisted.AssistedInject
 import io.reactivex.Flowable
 import io.reactivex.ObservableTransformer
 import io.reactivex.SingleTransformer
@@ -22,14 +25,19 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
-import javax.inject.Inject
 
-class TopStoriesViewModel @Inject constructor(
+class TopStoriesViewModel @AssistedInject constructor(
+    @Assisted private val handle: SavedStateHandle,
     private val api: HackerNewsApi,
     private val storyDao: StoryDao,
     private val schedulers: AppRxSchedulers,
     private val resourceResolver: ResourceResolver
 ) : ViewModel() {
+
+    @AssistedInject.Factory
+    interface Factory {
+        fun create(handle: SavedStateHandle): TopStoriesViewModel
+    }
 
     private val disposable = CompositeDisposable()
 

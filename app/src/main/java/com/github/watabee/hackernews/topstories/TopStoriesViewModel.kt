@@ -18,6 +18,7 @@ import com.github.watabee.hackernews.util.ResourceResolver
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
 import io.reactivex.Flowable
+import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
 import io.reactivex.SingleTransformer
 import io.reactivex.disposables.CompositeDisposable
@@ -25,6 +26,8 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.BehaviorSubject
+
+private const val KEY_TOP_STORIES = "key_top_stories"
 
 class TopStoriesViewModel @AssistedInject constructor(
     @Assisted private val handle: SavedStateHandle,
@@ -70,16 +73,27 @@ class TopStoriesViewModel @AssistedInject constructor(
 
     private val actionProcessor =
         ObservableTransformer<TopStoriesAction, TopStoriesResult> { actions ->
-            actions.switchMap {
-                api.findTopStories()
-                    .map { it.take(30) }
-                    .compose(findStoryProcessor)
-                    .toObservable()
-                    .map<TopStoriesResult> { TopStoriesResult.Success(it) }
-                    .onErrorReturn { TopStoriesResult.Failure }
-                    .observeOn(schedulers.main)
-                    .startWith(TopStoriesResult.InFlight)
-            }
+            actions.ofType(FindTopStoriesAction::class.java)
+                .switchMap { findTopStoriesAction ->
+                    Observable.just(findTopStoriesAction.savedTopStories)
+                        .flatMap { savedTopStories ->
+                            if (savedTopStories.isNotEmpty()) Observable.just(savedTopStories)
+                            else Observable.empty()
+                        }
+                        .subscribeOn(schedulers.io)
+                        .concatWith(
+                            api.findTopStories()
+                                .map { it.take(30) }
+                                .doOnSuccess { handle.set(KEY_TOP_STORIES, it.toTypedArray()) }
+                        )
+                        .firstOrError()
+                        .compose(findStoryProcessor)
+                        .toObservable()
+                        .map<TopStoriesResult> { TopStoriesResult.Success(it) }
+                        .onErrorReturn { TopStoriesResult.Failure }
+                        .observeOn(schedulers.main)
+                        .startWith(TopStoriesResult.InFlight)
+                }
         }
 
     private val reducer =
@@ -110,8 +124,10 @@ class TopStoriesViewModel @AssistedInject constructor(
     }
 
     private fun actionFromEvent(event: TopStoriesEvent): TopStoriesAction = when (event) {
-        InitialEvent -> FindTopStoriesAction
-        RefreshEvent -> FindTopStoriesAction
+        InitialEvent -> FindTopStoriesAction(
+            handle.get<Array<Long>>(KEY_TOP_STORIES)?.toList() ?: emptyList()
+        )
+        RefreshEvent -> FindTopStoriesAction(emptyList())
     }
 
     private fun mapToUiModel(item: HackerNewsItem, now: Long): StoryUiModel {
@@ -145,7 +161,7 @@ private sealed class TopStoriesEvent {
 }
 
 private sealed class TopStoriesAction {
-    object FindTopStoriesAction : TopStoriesAction()
+    class FindTopStoriesAction(val savedTopStories: List<Long>) : TopStoriesAction()
 }
 
 private sealed class TopStoriesResult {

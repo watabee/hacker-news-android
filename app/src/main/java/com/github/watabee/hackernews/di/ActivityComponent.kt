@@ -13,8 +13,7 @@ interface ActivityComponent {
 
     @Subcomponent.Builder
     interface Builder {
-        @BindsInstance
-        fun appCompatActivity(appCompatActivity: AppCompatActivity): Builder
+        fun appCompatActivity(@BindsInstance appCompatActivity: AppCompatActivity): Builder
 
         fun build(): ActivityComponent
     }

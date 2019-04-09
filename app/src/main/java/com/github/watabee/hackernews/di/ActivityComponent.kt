@@ -11,18 +11,15 @@ interface ActivityComponent {
 
     fun inject(activity: TopStoriesActivity)
 
-    @Subcomponent.Builder
-    interface Builder {
-        fun appCompatActivity(@BindsInstance appCompatActivity: AppCompatActivity): Builder
-
-        fun build(): ActivityComponent
+    @Subcomponent.Factory
+    interface Factory {
+        fun create(@BindsInstance appCompatActivity: AppCompatActivity): ActivityComponent
     }
 
     companion object {
         fun create(activity: AppCompatActivity): ActivityComponent =
             (activity.application as HackerNewsApplication).appComponent
-                .activityComponentBuilder()
-                .appCompatActivity(activity)
-                .build()
+                .activityComponentFactory()
+                .create(activity)
     }
 }

@@ -21,19 +21,16 @@ interface AppComponent {
 
     fun inject(application: HackerNewsApplication)
 
-    fun activityComponentBuilder(): ActivityComponent.Builder
+    fun activityComponentFactory(): ActivityComponent.Factory
 
-    @Component.Builder
-    interface Builder {
-        fun appContext(@BindsInstance appContext: Context): Builder
-
-        fun build(): AppComponent
+    @Component.Factory
+    interface Factory {
+        fun create(@BindsInstance appContext: Context): AppComponent
     }
 
     companion object {
         fun create(appContext: Context): AppComponent =
-            DaggerAppComponent.builder()
-                .appContext(appContext)
-                .build()
+            DaggerAppComponent.factory()
+                .create(appContext)
     }
 }

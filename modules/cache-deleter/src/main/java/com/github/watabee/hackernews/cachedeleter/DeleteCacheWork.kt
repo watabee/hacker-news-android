@@ -8,7 +8,7 @@ import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.github.watabee.hackernews.db.dao.StoryDao
-import com.github.watabee.hackernews.workermanager.AppWorkerFactory
+import com.github.watabee.hackernews.workermanager.ListenableWorkerFactory
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
 import timber.log.Timber
@@ -21,7 +21,7 @@ internal class DeleteCacheWork @AssistedInject constructor(
 ) : Worker(context, params) {
 
     @AssistedInject.Factory
-    interface Factory : AppWorkerFactory {
+    interface Factory : ListenableWorkerFactory {
         override fun create(context: Context, params: WorkerParameters): ListenableWorker
     }
 

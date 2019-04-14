@@ -1,6 +1,7 @@
 package com.github.watabee.hackernews.cachedeleter
 
 import com.github.watabee.hackernews.AppInitializer
+import com.github.watabee.hackernews.workermanager.ListenableWorkerFactory
 import com.github.watabee.hackernews.workermanager.WorkerKey
 import com.squareup.inject.assisted.dagger2.AssistedModule
 import dagger.Binds
@@ -23,5 +24,5 @@ abstract class DeleteCacheModule {
     @WorkerKey(DeleteCacheWork::class)
     internal abstract fun bindDeleteCacheWorkFactory(
         factory: DeleteCacheWork.Factory
-    ): com.github.watabee.hackernews.workermanager.AppWorkerFactory
+    ): ListenableWorkerFactory
 }

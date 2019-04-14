@@ -10,14 +10,14 @@ import javax.inject.Inject
 
 internal class WorkManagerInitializer : DaggerContentProvider() {
 
-    @Inject lateinit var appWorkerFactoryFactory: AppWorkerFactoryFactory
+    @Inject lateinit var appWorkerFactory: AppWorkerFactory
 
     override fun onCreate(): Boolean {
         super.onCreate()
 
         WorkManager.initialize(
             context!!,
-            Configuration.Builder().setWorkerFactory(appWorkerFactoryFactory).build()
+            Configuration.Builder().setWorkerFactory(appWorkerFactory).build()
         )
         return true
     }

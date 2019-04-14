@@ -1,0 +1,32 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion versions.compileSdk
+    defaultConfig {
+        minSdkVersion versions.minSdk
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation project(":modules:base-android")
+    implementation project(":modules:db")
+    implementation project(":modules:worker-manager")
+
+    implementation deps.kotlin.stdlib
+
+    // DI
+    implementation deps.dagger.core
+    kapt deps.dagger.compiler
+    compileOnly deps.dagger.assistedInjectAnnotations
+    kapt deps.dagger.assistedInjectProcessor
+
+    // Timber
+    implementation deps.timber
+}

@@ -25,6 +25,7 @@ ext {
         'room': '2.1.0-alpha06',
         'browser': '1.0.0',
         'core': '1.1.0-alpha05',
+        'work': '2.0.1',
 
         'groupie': '2.3.0',
         'cardview': '1.0.0',
@@ -55,6 +56,9 @@ ext {
                 'runtime' : "androidx.room:room-runtime:${versions.room}",
                 'compiler' : "androidx.room:room-compiler:${versions.room}",
                 'rxjava' : "androidx.room:room-rxjava2:${versions.room}",
+            ],
+            'work' : [
+                'runtime' : "androidx.work:work-runtime-ktx:${versions.work}",
             ],
             'cardview' : "androidx.cardview:cardview:${versions.cardview}",
             'test' : [

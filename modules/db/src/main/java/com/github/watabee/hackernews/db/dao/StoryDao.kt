@@ -17,6 +17,6 @@ interface StoryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertStory(story: Story): Completable
 
-    @Query("DELETE FROM stories WHERE id IN (:storyIds)")
-    fun deleteStories(storyIds: List<Long>): Completable
+    @Query("DELETE FROM stories WHERE updatedAt < :time")
+    fun deleteStories(time: Long)
 }

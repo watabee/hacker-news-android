@@ -3,6 +3,7 @@ package com.github.watabee.hackernews.di
 import android.content.Context
 import com.github.watabee.hackernews.HackerNewsApplication
 import com.github.watabee.hackernews.api.ApiModule
+import com.github.watabee.hackernews.cachedeleter.DeleteCacheModule
 import com.github.watabee.hackernews.db.di.DbModule
 import dagger.BindsInstance
 import dagger.Component
@@ -14,7 +15,8 @@ import javax.inject.Singleton
         AppModule::class,
         AppModuleBinds::class,
         ApiModule::class,
-        DbModule::class
+        DbModule::class,
+        DeleteCacheModule::class
     ]
 )
 interface AppComponent {

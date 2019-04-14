@@ -35,6 +35,8 @@ dependencies {
     implementation project(":modules:base-android")
     implementation project(":modules:api")
     implementation project(":modules:db")
+    implementation project(":modules:cache-deleter")
+    implementation project(":modules:worker-manager")
 
     implementation deps.kotlin.stdlib
     implementation deps.androidx.appcompat

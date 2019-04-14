@@ -1,13 +1,12 @@
 package com.github.watabee.hackernews.topstories
 
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.AbstractSavedStateVMFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import javax.inject.Inject
 
 class TopStoriesViewModelFactory @Inject constructor(
-    activity: AppCompatActivity,
+    activity: TopStoriesActivity,
     private val factory: TopStoriesViewModel.Factory
 ) : AbstractSavedStateVMFactory(activity, null) {
 

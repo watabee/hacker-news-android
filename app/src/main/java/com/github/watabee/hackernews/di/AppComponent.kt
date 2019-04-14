@@ -1,38 +1,28 @@
 package com.github.watabee.hackernews.di
 
-import android.content.Context
 import com.github.watabee.hackernews.HackerNewsApplication
 import com.github.watabee.hackernews.api.ApiModule
 import com.github.watabee.hackernews.cachedeleter.DeleteCacheModule
 import com.github.watabee.hackernews.db.di.DbModule
-import dagger.BindsInstance
 import dagger.Component
+import dagger.android.AndroidInjectionModule
+import dagger.android.AndroidInjector
 import javax.inject.Singleton
 
 @Singleton
 @Component(
     modules = [
+        AndroidInjectionModule::class,
         AppModule::class,
         AppModuleBinds::class,
+        ActivityModule::class,
         ApiModule::class,
         DbModule::class,
         DeleteCacheModule::class
     ]
 )
-interface AppComponent {
-
-    fun inject(application: HackerNewsApplication)
-
-    fun activityComponentFactory(): ActivityComponent.Factory
+interface AppComponent : AndroidInjector<HackerNewsApplication> {
 
     @Component.Factory
-    interface Factory {
-        fun create(@BindsInstance appContext: Context): AppComponent
-    }
-
-    companion object {
-        fun create(appContext: Context): AppComponent =
-            DaggerAppComponent.factory()
-                .create(appContext)
-    }
+    interface Factory : AndroidInjector.Factory<HackerNewsApplication>
 }

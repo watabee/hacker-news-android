@@ -9,12 +9,12 @@ import com.github.watabee.hackernews.R
 import com.github.watabee.hackernews.common.StoriesAdapter
 import com.github.watabee.hackernews.common.StoryBindableItem
 import com.github.watabee.hackernews.databinding.ActivityTopStoriesBinding
-import com.github.watabee.hackernews.di.ActivityComponent
 import com.github.watabee.hackernews.util.bindView
 import com.github.watabee.hackernews.util.observeNonNull
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.inject.assisted.dagger2.AssistedModule
 import dagger.Module
+import dagger.android.AndroidInjection
 import javax.inject.Inject
 
 class TopStoriesActivity : AppCompatActivity(R.layout.activity_top_stories) {
@@ -39,8 +39,8 @@ class TopStoriesActivity : AppCompatActivity(R.layout.activity_top_stories) {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
-        ActivityComponent.create(this).inject(this)
         val binding: ActivityTopStoriesBinding = bindView()
 
         binding.lifecycleOwner = this

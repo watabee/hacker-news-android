@@ -4,7 +4,6 @@ import android.app.Application
 import com.github.watabee.hackernews.appinitializers.AppInitializers
 import com.github.watabee.hackernews.cachedeleter.registerDeleteCacheWork
 import com.github.watabee.hackernews.di.AppComponent
-import timber.log.Timber
 import javax.inject.Inject
 
 class HackerNewsApplication : Application() {
@@ -13,7 +12,6 @@ class HackerNewsApplication : Application() {
         AppComponent.create(this)
     }
 
-    @Inject lateinit var appEnv: AppEnv
     @Inject lateinit var appInitializers: AppInitializers
 
     override fun onCreate() {
@@ -21,10 +19,6 @@ class HackerNewsApplication : Application() {
         appComponent.inject(this)
 
         appInitializers.initialize(this)
-
-        if (appEnv.debug) {
-            Timber.plant(Timber.DebugTree())
-        }
 
         registerDeleteCacheWork()
     }

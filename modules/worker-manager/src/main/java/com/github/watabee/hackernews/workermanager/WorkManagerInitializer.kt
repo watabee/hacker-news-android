@@ -1,19 +1,45 @@
 package com.github.watabee.hackernews.workermanager
 
-import android.app.Application
+import android.content.ContentValues
+import android.database.Cursor
+import android.net.Uri
 import androidx.work.Configuration
 import androidx.work.WorkManager
-import com.github.watabee.hackernews.AppInitializer
+import dagger.android.DaggerContentProvider
 import javax.inject.Inject
 
-class WorkManagerInitializer @Inject internal constructor(
-    private val appWorkerFactoryFactory: AppWorkerFactoryFactory
-) : AppInitializer {
+internal class WorkManagerInitializer : DaggerContentProvider() {
 
-    override fun initialize(application: Application) {
+    @Inject lateinit var appWorkerFactoryFactory: AppWorkerFactoryFactory
+
+    override fun onCreate(): Boolean {
+        super.onCreate()
+
         WorkManager.initialize(
-            application.applicationContext,
+            context!!,
             Configuration.Builder().setWorkerFactory(appWorkerFactoryFactory).build()
         )
+        return true
     }
+
+    override fun insert(uri: Uri, values: ContentValues?): Uri? = null
+
+    override fun query(
+        uri: Uri,
+        projection: Array<String>?,
+        selection: String?,
+        selectionArgs: Array<String>?,
+        sortOrder: String?
+    ): Cursor? = null
+
+    override fun update(
+        uri: Uri,
+        values: ContentValues?,
+        selection: String?,
+        selectionArgs: Array<String>?
+    ): Int = 0
+
+    override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int = 0
+
+    override fun getType(uri: Uri): String? = null
 }

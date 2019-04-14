@@ -14,15 +14,6 @@ import com.squareup.inject.assisted.AssistedInject
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
-fun registerDeleteCacheWork() {
-    WorkManager.getInstance()
-        .enqueueUniquePeriodicWork(
-            "delete_cache_work",
-            ExistingPeriodicWorkPolicy.KEEP,
-            PeriodicWorkRequestBuilder<DeleteCacheWork>(1, TimeUnit.DAYS).build()
-        )
-}
-
 internal class DeleteCacheWork @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted params: WorkerParameters,
@@ -44,5 +35,16 @@ internal class DeleteCacheWork @AssistedInject constructor(
         }
         Timber.i("end doWork()")
         return Result.success()
+    }
+
+    companion object {
+        fun start() {
+            WorkManager.getInstance()
+                .enqueueUniquePeriodicWork(
+                    "delete_cache_work",
+                    ExistingPeriodicWorkPolicy.KEEP,
+                    PeriodicWorkRequestBuilder<DeleteCacheWork>(1, TimeUnit.DAYS).build()
+                )
+        }
     }
 }

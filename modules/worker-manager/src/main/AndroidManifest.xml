@@ -5,6 +5,11 @@
 
     <application>
         <provider
+            android:name=".WorkManagerInitializer"
+            android:authorities="${applicationId}.workmanager-initializer"
+            android:exported="false"/>
+
+        <provider
             android:name="androidx.work.impl.WorkManagerInitializer"
             android:authorities="${applicationId}.workmanager-init"
             android:exported="false"

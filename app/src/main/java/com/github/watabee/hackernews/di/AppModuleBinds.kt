@@ -3,7 +3,6 @@ package com.github.watabee.hackernews.di
 import androidx.lifecycle.ViewModelProvider
 import com.github.watabee.hackernews.AppInitializer
 import com.github.watabee.hackernews.appinitializers.TimberInitializer
-import com.github.watabee.hackernews.workermanager.WorkManagerInitializer
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoSet
@@ -17,8 +16,4 @@ abstract class AppModuleBinds {
     @Binds
     @IntoSet
     abstract fun bindTimberInitializer(initializer: TimberInitializer): AppInitializer
-
-    @Binds
-    @IntoSet
-    abstract fun bindWorkManagerInitializer(initializer: WorkManagerInitializer): AppInitializer
 }

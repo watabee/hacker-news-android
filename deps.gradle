@@ -94,8 +94,10 @@ ext {
                 'support' : "com.google.dagger:dagger-android-support:${versions.dagger}",
                 'processor' : "com.google.dagger:dagger-android-processor:${versions.dagger}",
             ],
-            'assistedInjectAnnotations' : "com.squareup.inject:assisted-inject-annotations-dagger2:${versions.assistedInject}",
-            'assistedInjectProcessor' : "com.squareup.inject:assisted-inject-processor-dagger2:${versions.assistedInject}",
+            'assistedInject': [
+                'annotations' : "com.squareup.inject:assisted-inject-annotations-dagger2:${versions.assistedInject}",
+                'processor' : "com.squareup.inject:assisted-inject-processor-dagger2:${versions.assistedInject}",
+            ],
         ],
 
         'groupie' : [

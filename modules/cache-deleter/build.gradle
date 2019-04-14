@@ -24,8 +24,8 @@ dependencies {
     // DI
     implementation deps.dagger.core
     kapt deps.dagger.compiler
-    compileOnly deps.dagger.assistedInjectAnnotations
-    kapt deps.dagger.assistedInjectProcessor
+    compileOnly deps.dagger.assistedInject.annotations
+    kapt deps.dagger.assistedInject.processor
 
     // Timber
     implementation deps.timber

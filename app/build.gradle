@@ -61,8 +61,8 @@ dependencies {
     kapt deps.dagger.compiler
     implementation deps.dagger.android.support
     kapt deps.dagger.android.processor
-    compileOnly deps.dagger.assistedInjectAnnotations
-    kapt deps.dagger.assistedInjectProcessor
+    compileOnly deps.dagger.assistedInject.annotations
+    kapt deps.dagger.assistedInject.processor
 
     implementation deps.groupie.core
     implementation deps.groupie.databinding

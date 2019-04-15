@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModel
 import javax.inject.Inject
 
 class TopStoriesViewModelFactory @Inject constructor(
-    activity: TopStoriesActivity,
+    fragment: TopStoriesFragment,
     private val factory: TopStoriesViewModel.Factory
-) : AbstractSavedStateVMFactory(activity, null) {
+) : AbstractSavedStateVMFactory(fragment, null) {
 
     override fun <T : ViewModel?> create(
         key: String,

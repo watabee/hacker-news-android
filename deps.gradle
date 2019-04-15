@@ -20,6 +20,7 @@ ext {
 
         'appcompat': '1.1.0-alpha04',
         'activity': '1.0.0-alpha06',
+        'fragment': '1.1.0-alpha06',
         'lifecycle': '2.1.0-alpha04',
         'recyclerview': '1.1.0-alpha04',
         'room': '2.1.0-alpha06',
@@ -40,6 +41,7 @@ ext {
         'androidx': [
             'appcompat': "androidx.appcompat:appcompat:${versions.appcompat}",
             'activity': "androidx.activity:activity-ktx:${versions.activity}",
+            'fragment': "androidx.fragment:fragment-ktx:${versions.fragment}",
             'recyclerview': "androidx.recyclerview:recyclerview:${versions.recyclerview}",
             'core': "androidx.core:core-ktx:${versions.core}",
             'constraintlayout': 'androidx.constraintlayout:constraintlayout:1.1.3',

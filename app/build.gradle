@@ -41,6 +41,7 @@ dependencies {
     implementation deps.kotlin.stdlib
     implementation deps.androidx.appcompat
     implementation deps.androidx.activity
+    implementation deps.androidx.fragment
     implementation deps.androidx.recyclerview
     implementation deps.androidx.core
     implementation deps.androidx.constraintlayout

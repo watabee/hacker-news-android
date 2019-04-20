@@ -15,12 +15,24 @@ android {
         buildConfigField "String", "API_BASE_URL", "\"https://hacker-news.firebaseio.com\""
     }
 
+    signingConfigs {
+        debug {
+            storeFile file("${rootDir}/config/debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+    }
+
     def secretFile = file("${rootDir}/secret/secret.gradle")
     if (secretFile.exists()) {
         apply from: secretFile.absolutePath, to: android
     }
 
     buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
         release {
             if (secretFile.exists()) {
                 signingConfig signingConfigs.release

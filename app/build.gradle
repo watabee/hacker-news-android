@@ -14,9 +14,18 @@ android {
 
         buildConfigField "String", "API_BASE_URL", "\"https://hacker-news.firebaseio.com\""
     }
+
+    def secretFile = file("${rootDir}/secret/secret.gradle")
+    if (secretFile.exists()) {
+        apply from: secretFile.absolutePath, to: android
+    }
+
     buildTypes {
         release {
-            minifyEnabled false
+            if (secretFile.exists()) {
+                signingConfig signingConfigs.release
+            }
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

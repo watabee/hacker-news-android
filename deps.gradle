@@ -102,6 +102,10 @@ ext {
             ],
         ],
 
+        'firebase': [
+            'core': "com.google.firebase:firebase-core:16.0.8"
+        ],
+
         'groupie' : [
             'core' : "com.xwray:groupie:${versions.groupie}",
             'databinding' : "com.xwray:groupie-databinding:${versions.groupie}",

@@ -88,6 +88,8 @@ dependencies {
     compileOnly deps.dagger.assistedInject.annotations
     kapt deps.dagger.assistedInject.processor
 
+    implementation deps.firebase.core
+
     implementation deps.groupie.core
     implementation deps.groupie.databinding
 
@@ -95,3 +97,6 @@ dependencies {
     androidTestImplementation deps.androidx.test.runner
     androidTestImplementation deps.androidx.test.espresso
 }
+
+// Add to the bottom of the file
+apply plugin: 'com.google.gms.google-services'

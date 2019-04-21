@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion versions.compileSdk
@@ -40,7 +41,14 @@ android {
                 signingConfig signingConfigs.release
             }
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            def files = project.file("proguards")
+                .listFiles()
+                .findAll { it.name.startsWith('proguard') }
+                .toList()
+                .toArray() + getDefaultProguardFile("proguard-android-optimize.txt")
+
+            proguardFiles(files)
         }
     }
 
@@ -89,6 +97,7 @@ dependencies {
     kapt deps.dagger.assistedInject.processor
 
     implementation deps.firebase.core
+    implementation deps.firebase.crashlytics
 
     implementation deps.groupie.core
     implementation deps.groupie.databinding

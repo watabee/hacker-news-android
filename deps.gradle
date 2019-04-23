@@ -18,6 +18,7 @@ ext {
 
         'timber': '4.7.1',
 
+        'annotation': '1.1.0-beta01',
         'appcompat': '1.1.0-alpha04',
         'activity': '1.0.0-alpha06',
         'fragment': '1.1.0-alpha06',
@@ -27,6 +28,8 @@ ext {
         'browser': '1.0.0',
         'core': '1.1.0-alpha05',
         'work': '2.0.1',
+        'espresso': '3.1.1',
+        'arch': '2.1.0-alpha01',
 
         'groupie': '2.3.0',
         'cardview': '1.0.0',
@@ -58,14 +61,24 @@ ext {
                 'runtime' : "androidx.room:room-runtime:${versions.room}",
                 'compiler' : "androidx.room:room-compiler:${versions.room}",
                 'rxjava' : "androidx.room:room-rxjava2:${versions.room}",
+                'testing' : "androidx.room:room-testing:${versions.room}",
             ],
             'work' : [
                 'runtime' : "androidx.work:work-runtime-ktx:${versions.work}",
             ],
             'cardview' : "androidx.cardview:cardview:${versions.cardview}",
+            'arch': [
+                'testing': "androidx.arch.core:core-testing:${versions.arch}"
+            ],
             'test' : [
-                'runner' : 'androidx.test:runner:1.1.1',
-                'espresso' : 'androidx.test.espresso:espresso-core:3.1.1',
+                'runner' : 'androidx.test:runner:1.2.0-alpha04',
+                'rules': 'androidx.test:rules:1.2.0-alpha04',
+                'junit': 'androidx.test.ext:junit-ktx:1.1.1-alpha04',
+                'espresso': [
+                    'core': "androidx.test.espresso:espresso-core:${versions.espresso}",
+                    'contrib': "androidx.test.espresso:espresso-contrib:${versions.espresso}",
+                ],
+                'truth': "androidx.test.ext:truth:1.2.0-alpha04",
             ],
         ],
 
@@ -117,5 +130,7 @@ ext {
         'timber': "com.jakewharton.timber:timber:${versions.timber}",
 
         'junit' : 'junit:junit:4.12',
+
+        'robolectric': "org.robolectric:robolectric:4.2",
     ]
 }

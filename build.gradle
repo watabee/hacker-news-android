@@ -21,6 +21,21 @@ allprojects {
         google()
         jcenter()
     }
+
+    configurations.all {
+        resolutionStrategy {
+            eachDependency { details ->
+                switch (details.requested.group) {
+                    case 'androidx.annotation':
+                        details.useVersion versions.annotation
+                        break
+                    case 'androidx.arch.core':
+                        details.useVersion versions.arch
+                        break
+                }
+            }
+        }
+    }
 }
 
 task clean(type: Delete) {

@@ -13,12 +13,26 @@ android {
                                  "$projectDir/schemas".toString()]
             }
         }
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    sourceSets {
+        test.assets.srcDirs += files("$projectDir/schemas".toString())
     }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    testOptions {
+        unitTests.includeAndroidResources = true
+    }
+}
+
+configurations {
+    [testImplementation, androidTestImplementation]*.extendsFrom sharedTestImplementation
 }
 
 dependencies {
@@ -34,4 +48,14 @@ dependencies {
 
     api deps.dagger.core
     kapt deps.dagger.compiler
+
+    sharedTestImplementation deps.androidx.test.junit
+    sharedTestImplementation deps.androidx.test.truth
+    sharedTestImplementation deps.androidx.test.runner
+    sharedTestImplementation deps.androidx.test.rules
+    sharedTestImplementation deps.androidx.room.testing
+
+    testImplementation deps.androidx.arch.testing
+    testImplementation deps.robolectric
+    testImplementation deps.androidx.lifecycle.livedata
 }

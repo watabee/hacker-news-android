@@ -104,7 +104,7 @@ dependencies {
 
     testImplementation deps.junit
     androidTestImplementation deps.androidx.test.runner
-    androidTestImplementation deps.androidx.test.espresso
+    androidTestImplementation deps.androidx.test.espresso.core
 }
 
 // Add to the bottom of the file

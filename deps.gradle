@@ -29,7 +29,7 @@ ext {
         'core': '1.2.0-alpha01',
         'work': '2.1.0-alpha02',
         'espresso': '3.1.1',
-        'arch': '2.1.0-alpha01',
+        'arch': '2.1.0-beta01',
 
         'groupie': '2.3.0',
         'cardview': '1.0.0',

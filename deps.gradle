@@ -20,7 +20,7 @@ ext {
 
         'annotation': '1.1.0',
         'appcompat': '1.1.0-beta01',
-        'activity': '1.0.0-alpha08',
+        'activity': '1.0.0-beta01',
         'fragment': '1.1.0-alpha09',
         'lifecycle': '2.2.0-alpha01',
         'recyclerview': '1.1.0-alpha05',

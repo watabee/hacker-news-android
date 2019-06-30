@@ -8,7 +8,9 @@ import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import okhttp3.Cache
+import okhttp3.Call
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -35,8 +37,10 @@ object ApiModule {
         if (appEnv.debug) {
             builder.addInterceptor(
                 HttpLoggingInterceptor(
-                    HttpLoggingInterceptor.Logger { Timber.tag("OkHttp").w(it) }
-                ).setLevel(HttpLoggingInterceptor.Level.BODY)
+                    object : HttpLoggingInterceptor.Logger {
+                        override fun log(message: String) = Timber.tag("OkHttp").w(message)
+                    }
+                ).apply { level = HttpLoggingInterceptor.Level.BODY }
             )
         }
 
@@ -59,7 +63,9 @@ object ApiModule {
         appEnv: AppEnv
     ): Retrofit {
         return Retrofit.Builder()
-            .callFactory { request -> okHttpClient.get().newCall(request) }
+            .callFactory(object : Call.Factory {
+                override fun newCall(request: Request): Call = okHttpClient.get().newCall(request)
+            })
             .baseUrl(appEnv.apiBaseUrl)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .addCallAdapterFactory(
